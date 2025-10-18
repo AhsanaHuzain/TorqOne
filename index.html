@@ -623,6 +623,7 @@
                 width: 100%;
                 padding: 20px;
                 transition: left 0.3s;
+                z-index: 999;
             }
 
             .nav-links.active {
@@ -651,6 +652,147 @@
 
             .brand-grid {
                 grid-template-columns: repeat(2, 1fr);
+            }
+
+            /* Admin Dashboard Mobile */
+            .dashboard-tabs {
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+
+            .tab-btn {
+                padding: 10px 15px;
+                font-size: 0.9rem;
+                flex: 1;
+                min-width: 150px;
+            }
+
+            .dashboard-content {
+                padding: 15px;
+                overflow-x: auto;
+            }
+
+            table {
+                font-size: 0.85rem;
+            }
+
+            table th,
+            table td {
+                padding: 10px 5px;
+            }
+
+            .product-thumb {
+                width: 40px;
+                height: 40px;
+            }
+
+            .btn {
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
+
+            .dashboard-header {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .dashboard-header h2 {
+                width: 100%;
+            }
+
+            .dashboard-header .btn {
+                width: 100%;
+            }
+
+            .admin-login {
+                margin: 50px auto;
+                padding: 30px 20px;
+            }
+
+            .admin-login h2 {
+                font-size: 1.5rem;
+            }
+
+            .form-group input,
+            .form-group textarea,
+            .form-group select {
+                font-size: 16px; /* Prevents zoom on iOS */
+            }
+
+            /* Prevent horizontal scroll on table */
+            .dashboard-content {
+                -webkit-overflow-scrolling: touch;
+            }
+
+            table {
+                width: 100%;
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+
+            table thead {
+                display: table;
+                width: 100%;
+            }
+
+            table tbody {
+                display: block;
+            }
+
+            table tr {
+                display: table;
+                width: 100%;
+                table-layout: fixed;
+            }
+        }
+
+        /* Extra small devices */
+        @media (max-width: 480px) {
+            .logo {
+                font-size: 1.3rem;
+            }
+
+            .hero h1 {
+                font-size: 1.5rem;
+            }
+
+            .section-title {
+                font-size: 1.8rem;
+            }
+
+            .product-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .product-card {
+                border-radius: 10px;
+            }
+
+            .tab-btn {
+                padding: 8px 12px;
+                font-size: 0.8rem;
+                min-width: 100px;
+            }
+
+            table th,
+            table td {
+                padding: 8px 3px;
+                font-size: 0.75rem;
+            }
+
+            .btn-secondary.btn {
+                padding: 6px 12px;
+                font-size: 0.8rem;
+            }
+
+            .product-name {
+                font-size: 0.9rem;
+            }
+
+            .product-price {
+                font-size: 1.2rem;
             }
         }
     </style>
@@ -1361,14 +1503,14 @@
         async function adminLogin(event) {
             event.preventDefault();
             
-            const username = document.getElementById('adminUsername').value;
+            const username = document.getElementById('adminUsername').value.toLowerCase().trim();
             const password = document.getElementById('adminPassword').value;
             
             try {
                 const { data, error } = await supabase
                     .from('admin_users')
                     .select('*')
-                    .eq('username', username)
+                    .ilike('username', username)
                     .eq('is_active', true);
 
                 if (error) {
