@@ -62,7 +62,7 @@
         }
 
         .logo::before {
-            content: "🔩";
+            content: "🔧";
             font-size: 2rem;
         }
 
@@ -490,6 +490,7 @@
             display: flex;
             gap: 15px;
             margin-bottom: 30px;
+            flex-wrap: wrap;
         }
 
         .tab-btn {
@@ -500,6 +501,7 @@
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
+            font-size: 0.95rem;
         }
 
         .tab-btn.active {
@@ -512,12 +514,24 @@
             padding: 30px;
             border-radius: 15px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        /* Table wrapper with dual scroll */
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            overflow-y: auto;
+            max-height: 600px;
+            border-radius: 10px;
+            border: 1px solid var(--silver);
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
+            min-width: 600px;
         }
 
         table th,
@@ -525,11 +539,15 @@
             padding: 15px;
             text-align: left;
             border-bottom: 1px solid var(--silver);
+            white-space: nowrap;
         }
 
         table th {
             background: var(--light-gray);
             font-weight: 700;
+            position: sticky;
+            top: 0;
+            z-index: 10;
         }
 
         table tr:hover {
@@ -651,6 +669,93 @@
 
             .brand-grid {
                 grid-template-columns: repeat(2, 1fr);
+            }
+
+            .dashboard-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .dashboard-header button {
+                width: 100%;
+            }
+
+            .dashboard-tabs {
+                flex-direction: column;
+            }
+
+            .tab-btn {
+                width: 100%;
+            }
+
+            .dashboard-content {
+                padding: 15px;
+                overflow-x: hidden;
+            }
+
+            .table-wrapper {
+                max-height: 400px;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            table th,
+            table td {
+                padding: 10px;
+                font-size: 0.9rem;
+            }
+
+            .product-thumb {
+                width: 40px;
+                height: 40px;
+            }
+
+            .admin-login {
+                margin: 50px 15px;
+                padding: 25px;
+            }
+
+            .modal-content {
+                margin: 20px 10px;
+            }
+
+            .modal-body {
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 1.5rem;
+            }
+
+            .section-title {
+                font-size: 1.8rem;
+            }
+
+            .btn {
+                padding: 12px 30px;
+                font-size: 1rem;
+            }
+
+            .dashboard-tabs {
+                gap: 8px;
+            }
+
+            .tab-btn {
+                padding: 10px 20px;
+                font-size: 0.85rem;
+            }
+
+            table th,
+            table td {
+                padding: 8px;
+                font-size: 0.8rem;
+            }
+
+            .product-thumb {
+                width: 35px;
+                height: 35px;
             }
         }
     </style>
@@ -822,39 +927,43 @@
                 <div id="productsTab">
                     <h3>All Products</h3>
                     <div class="loading" id="productsLoading">Loading products...</div>
-                    <table id="productsTable" style="display: none;">
-                        <thead>
-                            <tr>
-                                <th>Image</th>
-                                <th>Name</th>
-                                <th>Brand</th>
-                                <th>Price</th>
-                                <th>Stock</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
+                    <div class="table-wrapper" id="productsTableWrapper" style="display: none;">
+                        <table id="productsTable">
+                            <thead>
+                                <tr>
+                                    <th>Image</th>
+                                    <th>Name</th>
+                                    <th>Brand</th>
+                                    <th>Price</th>
+                                    <th>Stock</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
                 </div>
 
                 <!-- View Bookings Tab -->
                 <div id="bookingsTab" style="display: none;">
                     <h3>All Bookings</h3>
                     <div class="loading" id="bookingsLoading">Loading bookings...</div>
-                    <table id="bookingsTable" style="display: none;">
-                        <thead>
-                            <tr>
-                                <th>Customer</th>
-                                <th>Mobile</th>
-                                <th>Product</th>
-                                <th>Quantity</th>
-                                <th>Total</th>
-                                <th>Status</th>
-                                <th>Date</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
+                    <div class="table-wrapper" id="bookingsTableWrapper" style="display: none;">
+                        <table id="bookingsTable">
+                            <thead>
+                                <tr>
+                                    <th>Customer</th>
+                                    <th>Mobile</th>
+                                    <th>Product</th>
+                                    <th>Quantity</th>
+                                    <th>Total</th>
+                                    <th>Status</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
                 </div>
 
                 <!-- Add Product Tab -->
@@ -1462,7 +1571,7 @@
                 productsTable.innerHTML = '';
                 
                 if (data && data.length > 0) {
-                    document.getElementById('productsTable').style.display = 'table';
+                    document.getElementById('productsTableWrapper').style.display = 'block';
                     
                     data.forEach(product => {
                         const row = document.createElement('tr');
@@ -1478,14 +1587,14 @@
                             <td>₹${product.price}</td>
                             <td>${product.stock_quantity}</td>
                             <td>
-                                <button class="btn-secondary btn" onclick="deleteProduct(${product.id})" style="padding: 8px 20px;">Delete</button>
+                                <button class="btn-secondary btn" onclick="deleteProduct(${product.id})" style="padding: 8px 20px; font-size: 0.85rem;">Delete</button>
                             </td>
                         `;
                         productsTable.appendChild(row);
                     });
                 } else {
                     productsTable.innerHTML = '<tr><td colspan="6" style="text-align: center;">No products found</td></tr>';
-                    document.getElementById('productsTable').style.display = 'table';
+                    document.getElementById('productsTableWrapper').style.display = 'block';
                 }
             } catch (error) {
                 console.error('Error loading admin products:', error);
@@ -1508,7 +1617,7 @@
                 bookingsTable.innerHTML = '';
                 
                 if (data && data.length > 0) {
-                    document.getElementById('bookingsTable').style.display = 'table';
+                    document.getElementById('bookingsTableWrapper').style.display = 'block';
                     
                     data.forEach(booking => {
                         const row = document.createElement('tr');
@@ -1525,7 +1634,7 @@
                     });
                 } else {
                     bookingsTable.innerHTML = '<tr><td colspan="7" style="text-align: center;">No bookings yet</td></tr>';
-                    document.getElementById('bookingsTable').style.display = 'table';
+                    document.getElementById('bookingsTableWrapper').style.display = 'block';
                 }
             } catch (error) {
                 console.error('Error loading admin bookings:', error);
