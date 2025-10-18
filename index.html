@@ -525,9 +525,6 @@
             padding: 15px;
             text-align: left;
             border-bottom: 1px solid var(--silver);
-            word-wrap: break-word;
-            overflow-wrap: break-word;
-            white-space: normal;
         }
 
         table th {
@@ -537,114 +534,6 @@
 
         table tr:hover {
             background: var(--light-gray);
-        }
-
-        .btn-secondary.btn {
-            padding: 8px 16px;
-            font-size: 0.9rem;
-        }
-
-        /* Mobile table styles */
-        @media (max-width: 1024px) {
-            table {
-                font-size: 0.9rem;
-            }
-
-            table th,
-            table td {
-                padding: 12px 10px;
-                word-break: normal;
-                white-space: normal;
-            }
-
-            table th {
-                font-size: 0.85rem;
-            }
-        }
-
-        @media (max-width: 768px) {
-            table {
-                display: block;
-                overflow-x: auto;
-                -webkit-overflow-scrolling: touch;
-                border: none;
-                font-size: 0.8rem;
-            }
-
-            table thead {
-                display: table;
-                width: 100%;
-                table-layout: auto;
-            }
-
-            table tbody {
-                display: block;
-            }
-
-            table tr {
-                display: table;
-                width: 100%;
-                table-layout: auto;
-                margin-bottom: 8px;
-                border: 1px solid var(--silver);
-                border-radius: 8px;
-            }
-
-            table th,
-            table td {
-                padding: 10px 8px;
-                font-size: 0.75rem;
-                white-space: normal;
-                word-break: break-word;
-                word-wrap: break-word;
-            }
-
-            table th {
-                background: var(--light-gray);
-                font-weight: 600;
-                padding: 8px 6px;
-            }
-
-            table td {
-                padding: 8px 6px;
-            }
-
-            .product-thumb {
-                width: 35px;
-                height: 35px;
-            }
-
-            .btn-secondary.btn {
-                padding: 6px 12px;
-                font-size: 0.7rem;
-                white-space: nowrap;
-            }
-        }
-
-        @media (max-width: 480px) {
-            table th,
-            table td {
-                padding: 6px 4px;
-                font-size: 0.65rem;
-            }
-
-            table th {
-                padding: 6px 4px;
-            }
-
-            table td {
-                padding: 6px 4px;
-            }
-
-            .product-thumb {
-                width: 30px;
-                height: 30px;
-            }
-
-            .btn-secondary.btn {
-                padding: 5px 10px;
-                font-size: 0.6rem;
-            }
         }
 
         .product-thumb {
@@ -734,7 +623,6 @@
                 width: 100%;
                 padding: 20px;
                 transition: left 0.3s;
-                z-index: 999;
             }
 
             .nav-links.active {
@@ -763,63 +651,6 @@
 
             .brand-grid {
                 grid-template-columns: repeat(2, 1fr);
-            }
-
-            /* Admin Dashboard Mobile */
-            .dashboard-tabs {
-                flex-wrap: wrap;
-                gap: 10px;
-            }
-
-            .tab-btn {
-                padding: 10px 15px;
-                font-size: 0.9rem;
-                flex: 1;
-                min-width: 150px;
-            }
-
-            .dashboard-content {
-                padding: 15px;
-                overflow-x: auto;
-                -webkit-overflow-scrolling: touch;
-            }
-
-            .product-thumb {
-                width: 40px;
-                height: 40px;
-            }
-
-            .btn {
-                padding: 10px 20px;
-                font-size: 0.9rem;
-            }
-
-            .dashboard-header {
-                flex-direction: column;
-                gap: 15px;
-            }
-
-            .dashboard-header h2 {
-                width: 100%;
-            }
-
-            .dashboard-header .btn {
-                width: 100%;
-            }
-
-            .admin-login {
-                margin: 50px auto;
-                padding: 30px 20px;
-            }
-
-            .admin-login h2 {
-                font-size: 1.5rem;
-            }
-
-            .form-group input,
-            .form-group textarea,
-            .form-group select {
-                font-size: 16px; /* Prevents zoom on iOS */
             }
         }
     </style>
@@ -1530,14 +1361,14 @@
         async function adminLogin(event) {
             event.preventDefault();
             
-            const username = document.getElementById('adminUsername').value.toLowerCase().trim();
+            const username = document.getElementById('adminUsername').value;
             const password = document.getElementById('adminPassword').value;
             
             try {
                 const { data, error } = await supabase
                     .from('admin_users')
                     .select('*')
-                    .ilike('username', username)
+                    .eq('username', username)
                     .eq('is_active', true);
 
                 if (error) {
